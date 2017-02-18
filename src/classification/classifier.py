@@ -81,12 +81,26 @@ def learn():
 
     with timer('parsing imdb'):
         with open('imdb62.txt') as f:
+            cnt = 0
             for line in f:
                 tok = line.split(None, 5)
                 author = tok[1]
                 body = tok[5]
                 X.append(body)
                 y.append(author)
+
+    pipeline = Pipeline([
+        ('tfidf', TfidfTransformer()),
+        ('chi2', SelectKBest(chi2, k=1000)),
+        ('nb', MultinomialNB())
+    ])
+    #classif = SklearnClassifier(pipeline)
+    #pipeline = Pipeline([
+    #    ('count_vectorizer',   CountVectorizer(ngram_range=(1, 2))),
+    #    ('classifier',         MultinomialNB()),
+    #])
+    #pipeline.fit(X_train, y_train)
+    #print pipeline.score(X_test, y_test)
 
     Xo = X
     yo = y
@@ -117,6 +131,7 @@ def learn():
         print("Score:   %0.3f" % score)
 
     show_most_informative_features(vectorizer, clf, n=45)
+    print(clf.decision_function(X_train))
 
     #with timer('Measuring confidence'):
     #    decision = clf.decision_function(X_train)
@@ -125,16 +140,6 @@ def learn():
     clf._max_confidence = 1.0
     clf._min_confidence = 0.0
 
-    #pipeline = Pipeline([('tfidf', TfidfTransformer()),
-    #                    ('chi2', SelectKBest(chi2, k=1000)),
-    #                    ('nb', MultinomialNB())])
-    #classif = SklearnClassifier(pipeline)
-    #pipeline = Pipeline([
-    #    ('count_vectorizer',   CountVectorizer(ngram_range=(1, 2))),
-    #    ('classifier',         MultinomialNB()),
-    #])
-    #pipeline.fit(X_train, y_train)
-    #print pipeline.score(X_test, y_test)
 
     return clf, vectorizer
 
@@ -169,20 +174,13 @@ def main():
 
         X = vectorizer.transform([new_body, ])
         dfu = clf.decision_function(X)
-        print("decision function: %s" % df)
+        print("decision function: %s" % dfu)
         predicted = clf.decision_function(X)[0]
-
-        print '---'
-        bar = '*' * abs(predicted / delta * 30)
-
-        if predicted >= 0:
-            print "Predicted: %-18s %20s|%-20s" % (desc, '', bar)
-
-        else:
-            print "Predicted: %-18s %20s|%-20s" % (desc, bar, '')
-
-
-
+        p_min = min(predicted)
+        p_max = max(predicted)
+        delta = p_max - p_min
+        for p, name in zip(predicted, clf.classes_):
+            print("%f %s" % ((p - p_min) / delta, name))
 
 
 if __name__ == '__main__':
