@@ -1,0 +1,6 @@
+.tox
+.coverage
+__pycache__
+*.egg
+*.egg-info
+*.py[cod]
