@@ -11,4 +11,3 @@ def analyze_string(sentence):
     idx =[2, 3, 4, 5, 6, 7]
     vals = [res[i] for i in idx]
     return [ {'metric':metric, 'score': value} for metric,value in vals]
-
