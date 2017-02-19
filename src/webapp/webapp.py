@@ -47,7 +47,7 @@ def anonymize(orig_text):
     if hot_words:
         msg = "Better choose some synonyms for: %s" % ' '.join(hot_words)
     else:
-        msg = "No words to replace"
+        msg = "Performing conservative phrase replacement"
     return dict(orig_text=orig_text, anonymized=anonymized, msg=msg, style=style)
 
 @route("/anonymize")

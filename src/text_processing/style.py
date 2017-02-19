@@ -9,4 +9,5 @@ def analyze_string(sentence):
 
    # relevant stuff
    idx =[2, 3, 4, 5, 6, 7]
+   print([res[i] for i in idx])
    return [res[i] for i in idx]
