@@ -11,6 +11,7 @@ $(document).ready(function(){
             success: function(response){
                 $('#quotearea').show();
                 $('#textresponse').text(response.anonymized);
+                $('#msg').text(response.msg);
             }
         });
     });
