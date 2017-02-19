@@ -11,6 +11,7 @@ import os
 
 sys.path.append("../")
 from text_processing.cleanse_text import normalize_text
+from text_processing.conservative_word_replace import *
 from classification import classifier
 
 
@@ -38,10 +39,11 @@ def receive_form_post():
 def anonymize(orig_text):
     mangled = normalize_text(orig_text)
     anonymized, msg = classifier.classify_new_text(clf, vectorizer, mangled)
+    anonymized = ReplaceSomeWords(anonymized)
     hot_words = classifier.lime_explain(clf, vectorizer, mangled, num_examples_per_class=20,
                  num_lime_features=20)
     if hot_words:
-        msg = "Better choose some synonims for: %s" % ' '.join(hot_words)
+        msg = "Better choose some synonyms for: %s" % ' '.join(hot_words)
     else:
         msg = "No words to replace"
     return dict(orig_text=orig_text, anonymized=anonymized, msg=msg)
