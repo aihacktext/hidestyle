@@ -5,7 +5,12 @@
 
 from datetime import datetime
 from bottle import route, run, view, post, request
+import sys
+import os
 
+# Import functions to alter the text
+sys.path.append("../")
+from text_processing.cleanse_text import normalize_text 
 
 # Bottle routes
 
@@ -19,7 +24,7 @@ def index():
 def receive_form_post():
     orig_text = request.forms.get('text')
     # FIXME
-    anonymized = orig_text
+    anonymized = normalize_text(orig_text)
     msg = "Better choose some synonims for: foo bar baz"
     return dict(orig_text=orig_text, anonymized=anonymized, msg=msg)
 

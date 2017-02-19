@@ -21,17 +21,18 @@
     </style>
   </head>
   <body>
+   <img src="http://txt-dynamic.static.1001fonts.net/txt/dHRmLjcyLjAwMDAwMC5RVzV2Ym5sdGFYTmxjZywsLjE,/got-heroin.regular.png">
     <div>
       <form action="/post" method="post">
-        % if anonymized:
+        <input type="input" name="text" value="{{orig_text}}"><br>
+        <input type="submit" value="Submit">
+         % if anonymized:
         <div class="hint">{{anonymized}}</div>
         % end
         % if msg:
         <div class="hint">{{msg}}</div>
         % end
-        <input type="input" name="text" value="{{orig_text}}"><br>
-        <input type="submit" value="Submit">
-      </form>
+     </form>
     </div>
   </body>
 </html>
