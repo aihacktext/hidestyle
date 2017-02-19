@@ -36,7 +36,20 @@ This episode takes place on Thanksgiving and Black Friday the next day so I'll j
 Very glad to know NBC gave this one a full-season pickup. Hope the writers' strike ends before the episodes run out.
 
 """
+example_text = """
+CHUCK VERSUS THE NEMESIS is the funniest action-packed episode of "Chuck" yet!
 
+
+This episode takes place on a clownish Thanksgiving and horrible Black Friday the next day so I'll just mention some tidbits here: 
+
+With Bryce now revealed to be alive, Chuck gets in the interrogation room with him and has to prove he's the real one to Bryce by talking in Klingon which he's rusty at. At Ellie's good-humoured Thanksgiving dinner, Anna shows jealousy at seeing Morgan's looks at Ellie as well as the way he's REALLY enjoying her food. 
+
+Chuck also is envious watching secretly Sarah and Bryce (who's unbeknownst to everyone else) kissing in his bedroom , so much so he's tells Casey in encoded form about it.
+
+ Chuck says "pineapple" to warn his fellow employees of a vast emergency as he's being held up by some tyrannical enemy agents threatening to kill everyone in sight. Morgan awkwardly seeing Bryce and saying how he reminds him of Chuck's old roommate who he thinks is a "douche". And then seeing Jeff hit on the head a couple of times after revealing how he liked being hit by a pineapple by his dad during his childhood. Most hilarious and action-packed of "Chuck" yet! With all my favorite characters and additional soccer mom shoppers contributing to the fun! 
+
+
+"""
 # Bottle routes
 @hook('after_request')
 def enable_cors():
