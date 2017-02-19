@@ -46,9 +46,29 @@ def anonymize():
 def server_static(filename):
     return static_file(filename, root='scripts/')
 
+@route("/learn")
+def learn():
+    global clf, vectorizer
+    #num_lime_features = request.query.text
+    max_items_per_author = 40
+    clf, vectorizer = classifier.learn(
+        max_items_per_author,
+        num_lime_features=10,
+        num_examples_per_class=20
+    )
+    clf_fname, vectorizer_fname = classifier.generate_pkl_filenames()
+    classifier.save_pickles(clf, clf_fname, vectorizer, vectorizer_fname)
+    return "Learning completed"
+
 def main():
     global clf, vectorizer
-    clf, vectorizer = classifier.load_pickles()
+
+    try:
+        clf, vectorizer = classifier.load_pickles()
+        print("Existing pickles loaded")
+    except Exception as e:
+        print("Pickles not found, learning")
+        learn()
 
     run(host='localhost', port=8080, debug=True)
 
