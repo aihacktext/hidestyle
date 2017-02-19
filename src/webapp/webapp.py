@@ -35,9 +35,7 @@ def receive_form_post():
     orig_text = request.forms.get('text')
     return dict(orig_text=orig_text, anonymized=mangled, msg=msg)
 
-@route("/anonymize")
-def anonymize():
-    orig_text = request.query.text
+def anonymize(orig_text):
     mangled = normalize_text(orig_text)
     anonymized, msg = classifier.classify_new_text(clf, vectorizer, mangled)
     hot_words = classifier.lime_explain(clf, vectorizer, mangled, num_examples_per_class=20,
@@ -48,21 +46,27 @@ def anonymize():
         msg = "No words to replace"
     return dict(orig_text=orig_text, anonymized=anonymized, msg=msg)
 
+@route("/anonymize")
+def serve_anonymize():
+    orig_text = request.query.text
+    return anonymize(orig_text)
+
 @route('/scripts/<filename>')
 def server_static(filename):
     return static_file(filename, root='scripts/')
 
-@post("/learn")
-def learn():
+def learn(max_items_per_author):
     global clf, vectorizer
-    max_items_per_author = int(request.forms.get('max_items_per_author'))
     clf, vectorizer = classifier.learn(
         max_items_per_author,
-        num_lime_features=10,
-        num_examples_per_class=max_items_per_author,
     )
     clf_fname, vectorizer_fname = classifier.generate_pkl_filenames()
     classifier.save_pickles(clf, clf_fname, vectorizer, vectorizer_fname)
+
+@post("/learn")
+def serve_learn():
+    max_items_per_author = int(request.forms.get('max_items_per_author'))
+    learn(max_items_per_author)
     return """
 <meta http-equiv="refresh" content="1;url=/" />
 <p>Learning completed</p>
@@ -78,7 +82,9 @@ def main():
         print("Existing pickles loaded")
     except Exception as e:
         print("Pickles not found, learning")
-        learn()
+        learn(40)
+        # Run anonymize once as a test
+        print(anonymize(example_text))
 
     run(host='localhost', port=8080, debug=True, reloader=True)
 
