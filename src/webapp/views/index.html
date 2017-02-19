@@ -30,14 +30,8 @@
         <div class="col-md-6">
 
         <form id="anonymizerform" action="/post" method="post">
-          % if anonymized:
-          <div class="hint">{{anonymized}}</div>
-          % end
-          % if msg:
-          <div class="hint">{{msg}}</div>
-          % end
           <div class="form-group">
-          <textarea id="input_text" rows=5 name="text" value="{{orig_text}}"></textarea>
+          <textarea id="input_text" rows=5 name="text">{{example_text}}</textarea>
           <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
