@@ -199,7 +199,6 @@ def learn(max_items_per_author, num_lime_features=10, num_examples_per_class=20)
     print('Train data shape:', train_data.shape)
 
     # Note: We use 0 for the generic author and 1 for the new author.
-    class_names = ['Generic-author', 'New-author']
     train_labels = np.array([0] * num_examples_per_class + [1] * duplicated_user_features.shape[0])
     print('Train labels shape:', train_labels.shape)
 
@@ -210,7 +209,7 @@ def learn(max_items_per_author, num_lime_features=10, num_examples_per_class=20)
     return classifier, vectorizer
 
 def lime_explain(classifier, vectorizer, user_input, num_examples_per_class=20,
-                 num_lime_features=10):
+                 num_lime_features=20):
     """Explain prediction using Lime
     """
     user_features = vectorizer.transform([user_input])
@@ -237,8 +236,9 @@ def lime_explain(classifier, vectorizer, user_input, num_examples_per_class=20,
     # we use LIME to identify the features that are most indicative for both classes
     exp = explainer.explain_instance(user_input, c.predict_proba, num_features=num_lime_features)
     hot_words = exp.as_list()
-    hot_words.sort(key=lambda w: w[1])  # sorted by value
-    print(hot_words)
+    hot_words.sort(key=lambda w: w[1], reverse=True)  # sorted by value
+    for hw in hot_words:
+        print("%-20s %f" % hw)
     hot_words = [w[0] for w in exp.as_list() if w[1] > 0]
     return hot_words
 

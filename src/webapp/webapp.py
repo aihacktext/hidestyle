@@ -41,7 +41,7 @@ def anonymize():
     mangled = normalize_text(orig_text)
     anonymized, msg = classifier.classify_new_text(clf, vectorizer, mangled)
     hot_words = classifier.lime_explain(clf, vectorizer, mangled, num_examples_per_class=20,
-                 num_lime_features=10)
+                 num_lime_features=20)
     if hot_words:
         msg = "Better choose some synonims for: %s" % ' '.join(hot_words)
     else:
