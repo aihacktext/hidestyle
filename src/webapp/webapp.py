@@ -13,7 +13,7 @@ sys.path.append("../")
 from text_processing.cleanse_text import normalize_text
 from text_processing.conservative_word_replace import *
 from classification import classifier
-
+from text_processing.style import analyze_string
 
 clf = vectorizer = None
 
@@ -42,11 +42,13 @@ def anonymize(orig_text):
     anonymized = ReplaceSomeWords(anonymized)
     hot_words = classifier.lime_explain(clf, vectorizer, mangled, num_examples_per_class=20,
                  num_lime_features=20)
+
+    style = analyze_string(orig_text)
     if hot_words:
         msg = "Better choose some synonyms for: %s" % ' '.join(hot_words)
     else:
         msg = "No words to replace"
-    return dict(orig_text=orig_text, anonymized=anonymized, msg=msg)
+    return dict(orig_text=orig_text, anonymized=anonymized, msg=msg, style=style)
 
 @route("/anonymize")
 def serve_anonymize():

@@ -10,6 +10,7 @@ $(document).ready(function(){
             crossDomain: true,
             success: function(response){
                 $('#quotearea').show();
+                $('#styleguide').text(response.style);
                 $('#textresponse').text(response.anonymized);
                 $('#msg').text(response.msg);
             }
