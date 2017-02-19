@@ -8,11 +8,19 @@ from bottle import route, run, view, post, request
 from bottle import static_file, hook, response
 import sys
 import os
+
 sys.path.append("../")
 from text_processing.conservative_word_replace import ReplaceSomeWords
 from text_processing.cleanse_text import normalize_text
 from classification import classifier
 from text_processing.style import analyze_string
+
+try:
+    import getRecommendations
+except Exception as e:
+    print("---")
+    print(e)
+    print("---")
 
 clf = vectorizer = None
 
@@ -56,7 +64,17 @@ def anonymize(orig_text):
         msg = "Better choose some synonyms for: %s" % ' '.join(hot_words)
     else:
         msg = "Performing conservative phrase replacement"
-    return dict(orig_text=orig_text, anonymized=anonymized, msg=msg, style=style)
+    try:
+        style_msg, style_sig = getRecommendations.analyze_style(mangled)
+    except Exception as e:
+        print(e)
+        style_msg = ""
+        style_sig = []
+
+    print("---")
+    print(style_sig)
+    print("---")
+    return dict(orig_text=orig_text, anonymized=anonymized, msg=msg, style=style, style_msg=style_msg, style_sig=style_sig)
 
 @route("/anonymize")
 def serve_anonymize():

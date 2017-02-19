@@ -13,16 +13,15 @@ def getStatsFromReviewText(inReviewText,inDir):
     #print(inReviewText)
     myFile.write(inReviewText)
     myFile.close()
-    
     #get stats From stylometry
     notDickens=StyloDocument(myTempFileName)
     headers=notDickens.csv_header().split(',')
     myData=notDickens.csv_output().split(',')
     myReturnData= pd.Series(data=myData ,index=headers)
-    
+
     return myReturnData
-  
-  
+
+
 def getSignature(inPercentStats):
     HighValue=.86
     LowValue=.14
@@ -40,46 +39,29 @@ def getRecommendString(inSeries,HighLowAndName,inAverages):
         + ' your average Review is in the ' +str(np.round(inSeries[FieldName+'_per']*100,0)) +' Percentile'
         #
     return myAnswer
-    
-    
-interestingColumns=[u'MeanWordLen', u'MeanSentenceLen', u'MeanParagraphLen', u'Commas',
-        u'Semicolons', u'Exclamations', u'Colons', u'Dashes',
-        u'Mdashes', u'Ands', u'Buts', u'Howevers', u'Ifs', u'Thats', u'Mores',
-        u'Musts', u'Mights', u'This', u'Verys']
- 
-interestingColumns=[x+'_per' for x  in interestingColumns]
-TextStatsOverallMeansReadIn=pd.read_csv(r'C:\Users\Barry\Anaconda\AIHackText\Random\TextStatsOverallMeans.csv')
-TextStatsReadIn=pd.read_csv(r'C:\Users\Barry\Anaconda\AIHackText\Random\TextStats.csv')
-TextStatsOverallMeansReadIn=pd.Series(data= TextStatsOverallMeansReadIn['504335.1'].values,index=TextStatsOverallMeansReadIn['Author'].values)
 
 
 
-
-imbdFileName='imdb62_p0.txt'
-imbdFileNameDir=r'C:\Users\Barry\Anaconda\AIHackText\Random'
-
-f=open(imbdFileNameDir+'\\'+imbdFileName)
-SampleText=f.readline().split(None,4)[4]
-
-
-def getRecommendations(inSampleText):
+def getRecommendations(inSampleText, TextStatsOverallMeansReadIn, TextStatsReadIn, interestingColumns):
     StatsForOneReview =getStatsFromReviewText(inSampleText,imbdFileNameDir).drop(['Author','Title']).convert_objects(convert_numeric=True)
 
     StatsForOneReviewPerc= copy.deepcopy(StatsForOneReview)
     for mycol in StatsForOneReview.index:
         StatsForOneReviewPerc[mycol+'_per']=percentileofscore(TextStatsReadIn[mycol],StatsForOneReview[mycol])/100
 
-    return '\n'.join([getRecommendString(StatsForOneReviewPerc,x,TextStatsOverallMeansReadIn) for x in getSignature(StatsForOneReviewPerc[interestingColumns])])
-    
-    
-f=open(imbdFileNameDir+'\\'+imbdFileName)
-f.readline().split(None,4)[4]
-f.readline().split(None,4)[4]
-f.readline().split(None,4)[4]
-f.readline().split(None,4)[4]
-f.readline().split(None,4)[4]
-                           
-SampleText=f.readline().split(None,4)[4]
+    sig = getSignature(StatsForOneReviewPerc[interestingColumns])
+    msg =  '\n'.join([getRecommendString(StatsForOneReviewPerc,x,TextStatsOverallMeansReadIn) for x in sig])
+    return msg, sig
 
+def analyze_style(SampleText):
+    interestingColumns=[u'MeanWordLen', u'MeanSentenceLen', u'MeanParagraphLen', u'Commas',
+            u'Semicolons', u'Exclamations', u'Colons', u'Dashes',
+            u'Mdashes', u'Ands', u'Buts', u'Howevers', u'Ifs', u'Thats', u'Mores',
+            u'Musts', u'Mights', u'This', u'Verys']
 
-getRecommendations(SampleText)
+    interestingColumns=[x+'_per' for x  in interestingColumns]
+    TextStatsOverallMeansReadIn=pd.read_csv(r'../TextStatsOverallMeans.csv')
+    TextStatsReadIn=pd.read_csv(r'../TextStats.csv')
+    TextStatsOverallMeansReadIn=pd.Series(data= TextStatsOverallMeansReadIn['504335.1'].values,index=TextStatsOverallMeansReadIn['Author'].values)
+
+    getRecommendations(SampleText, TextStatsOverallMeansReadIn, TextStatsReadIn, interestingColumns)
