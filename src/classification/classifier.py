@@ -236,9 +236,10 @@ def lime_explain(classifier, vectorizer, user_input, num_examples_per_class=20,
 
     # we use LIME to identify the features that are most indicative for both classes
     exp = explainer.explain_instance(user_input, c.predict_proba, num_features=num_lime_features)
-    print(exp.as_list())
-    hot_words = [w[0] for w in exp.as_list()]
+    hot_words = exp.as_list()
+    hot_words.sort(key=lambda w: w[1])  # sorted by value
     print(hot_words)
+    hot_words = [w[0] for w in exp.as_list() if w[1] > 0]
     return hot_words
 
     ##

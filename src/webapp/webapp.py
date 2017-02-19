@@ -39,7 +39,10 @@ def anonymize():
     anonymized, msg = classifier.classify_new_text(clf, vectorizer, mangled)
     hot_words = classifier.lime_explain(clf, vectorizer, mangled, num_examples_per_class=20,
                  num_lime_features=10)
-    msg = "Better choose some synonims for: %s" % ' '.join(hot_words)
+    if hot_words:
+        msg = "Better choose some synonims for: %s" % ' '.join(hot_words)
+    else:
+        msg = "No words to replace"
     return dict(orig_text=orig_text, anonymized=anonymized, msg=msg)
 
 @route('/scripts/<filename>')
