@@ -49,19 +49,23 @@ def anonymize():
 def server_static(filename):
     return static_file(filename, root='scripts/')
 
-@route("/learn")
+@post("/learn")
 def learn():
     global clf, vectorizer
-    #num_lime_features = request.query.text
-    max_items_per_author = 40
+    max_items_per_author = int(request.forms.get('max_items_per_author'))
     clf, vectorizer = classifier.learn(
         max_items_per_author,
         num_lime_features=10,
-        num_examples_per_class=20
+        num_examples_per_class=max_items_per_author,
     )
     clf_fname, vectorizer_fname = classifier.generate_pkl_filenames()
     classifier.save_pickles(clf, clf_fname, vectorizer, vectorizer_fname)
-    return "Learning completed"
+    return """
+<meta http-equiv="refresh" content="1;url=/" />
+<p>Learning completed</p>
+"""
+
+
 
 def main():
     global clf, vectorizer
