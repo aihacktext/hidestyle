@@ -8,8 +8,8 @@ from bottle import route, run, view, post, request
 from bottle import static_file, hook, response
 import sys
 import os
-from text_processing.conservative_word_replace import ReplaceSomeWords
 sys.path.append("../")
+from text_processing.conservative_word_replace import ReplaceSomeWords
 from text_processing.cleanse_text import normalize_text
 from classification import classifier
 from text_processing.style import analyze_string

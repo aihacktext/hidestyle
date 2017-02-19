@@ -1,9 +1,10 @@
-# spacy lightning tour
+import re
 
 # Convert text to lower-case and strip punctuation/symbols from words
 def normalize_text(text):
     norm_text = text.lower()
 
+    norm_text = re.sub(r"\.+", ".", norm_text)
     # Replace breaks with spaces, in case there's broken html in there
     norm_text = norm_text.replace('<br />', ' ')
 
