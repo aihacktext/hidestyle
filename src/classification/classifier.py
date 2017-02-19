@@ -78,7 +78,10 @@ def load_imdb(max_items_per_author):
     y = []
     seen_authors = {}
     with timer('parsing imdb'):
-        with open('imdb62.txt') as f:
+        for n in range(4):
+            fn = "../../texts/imdb62_p%d.txt" % n
+            print("Opening %s" % fn)
+            f = open(fn)
             for line in f:
                 tok = line.split(None, 5)
                 author = tok[1]
@@ -91,6 +94,8 @@ def load_imdb(max_items_per_author):
                     seen_authors[author] = 1
                 X.append(body)
                 y.append(author)
+            f.close()
+
     return X, y
 
 def learn_old(max_items_per_author):
@@ -233,6 +238,7 @@ def lime_explain(classifier, vectorizer, user_input, num_examples_per_class=20,
     exp = explainer.explain_instance(user_input, c.predict_proba, num_features=num_lime_features)
     print(exp.as_list())
     hot_words = [w[0] for w in exp.as_list()]
+    print(hot_words)
     return hot_words
 
     ##
@@ -296,11 +302,6 @@ def classify_new_text(clf, vectorizer, new_body):
 def main():
 
     opts = parse_args()
-
-    download_if_needed(
-        "https://doc-10-5g-docs.googleusercontent.com/docs/securesc/458l16557e3dc79l5g0asf6656vqredc/t3bttbjtqb4r1cari89roveb8c4nns7t/1487426400000/07115181027429506682/12988091470430942163/0B3emjZ5O5vDtQXdRSS04REZXYmM?e=download",
-        "imdb62.txt"
-    )
 
     clf_fname, vectorizer_fname = generate_pkl_filenames()
     if opts.learn or not os.path.isfile(clf_fname):
