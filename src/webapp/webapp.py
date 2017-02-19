@@ -70,7 +70,7 @@ def main():
         print("Pickles not found, learning")
         learn()
 
-    run(host='localhost', port=8080, debug=True)
+    run(host='localhost', port=8080, debug=True, reloader=True)
 
 if __name__ == "__main__":
     main()
