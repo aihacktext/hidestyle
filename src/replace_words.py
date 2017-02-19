@@ -14,7 +14,6 @@ def build_dict():
                 continue
             prev_word, count = l.split('|')
             skip += int(count)
-            
     for k,v in list(words.items()):
         words[k] = words[k].split(',')[0]
         if any([i in words[k] for i in list(string.punctuation)]):
