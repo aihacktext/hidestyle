@@ -10,9 +10,19 @@ $(document).ready(function(){
             crossDomain: true,
             success: function(response){
                 $('#quotearea').show();
-                $('#styleguide').text(response.style);
                 $('#textresponse').text(response.anonymized);
                 $('#msg').text(response.msg);
+                $('#table').bootstrapTable({
+                     columns: [{
+                        field: 'metric',
+                        title: 'Metric Name'
+                    }, {
+                        field: 'score',
+                        title: 'Score'
+                    }],
+                    data: response.style
+                });
+
             }
         });
     });
